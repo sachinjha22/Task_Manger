@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.TaskManger" parent="android:Theme.Material.Light.NoActionBar" >
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <style name="DatePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/color_primary
+        </item>                   <!--header background-->
+        <item name="android:windowBackground">@color/background
+        </item>     <!--calendar background-->
+        <item name="android:colorControlActivated">@color/color_primary</item> <!--selected day-->
+        <item name="android:textColorPrimary">@color/color_primary</item> <!--days of the month-->
+        <item name="android:textColorSecondary">@color/color_primary
+        </item>    <!--days of the week-->
+    </style>
+</resources>
