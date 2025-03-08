@@ -10,10 +10,8 @@
     </style>
 
     <style name="DatePickerDialogTheme" parent="ThemeOverlay.AppCompat.Dialog">
-        <item name="colorAccent">@color/color_primary
-        </item>                   <!--header background-->
-        <item name="android:windowBackground">@color/background
-        </item>     <!--calendar background-->
+        <item name="colorAccent">@color/color_primary</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/background</item>     <!--calendar background-->
         <item name="android:colorControlActivated">@color/color_primary</item> <!--selected day-->
         <item name="android:textColorPrimary">@color/color_primary</item> <!--days of the month-->
         <item name="android:textColorSecondary">@color/color_primary

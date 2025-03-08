@@ -1,15 +1,18 @@
 package com.example.taskmanger.data.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 
+@Keep
 @Entity(tableName = "tasks")
 @Parcelize
 data class Task(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val title: String,
     val description: String?,
     val priority: Priority,

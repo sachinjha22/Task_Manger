@@ -3,13 +3,9 @@ package com.example.taskmanger.ui.component
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,11 +26,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +41,7 @@ import com.example.taskmanger.ui.theme.shapes
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.math.abs
 
 @Composable
 fun TaskItemWithSwipe(
@@ -58,56 +52,80 @@ fun TaskItemWithSwipe(
     onTaskClick: (Task) -> Unit,
     onCompleteToggle: (Task) -> Unit,
     onDeleteClick: (Task) -> Unit,
+    onMove: (fromIndex: Int, toIndex: Int) -> Unit,
+    index :Int
 ) {
     val offsetX = remember { Animatable(0f) }
+    val offsetY = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .pointerInput(Unit) {
-                detectHorizontalDragGestures(
+                detectDragGestures(
                     onDragEnd = {
                         scope.launch {
-                            // If not fully swiped, animate back to 0
+                            // Reset position if not fully swiped
                             offsetX.animateTo(0f, animationSpec = tween(300))
+                            offsetY.animateTo(0f, animationSpec = tween(300))
                         }
                     }
-                ) { _, dragAmount ->
-                    scope.launch {
-                        offsetX.snapTo(offsetX.value + dragAmount)
+                ) { change, dragAmount ->
+                    change.consume()
 
-                        if (offsetX.value > 300) {
-                            onComplete(!task.isCompleted)
-                            val result = snackbarHostState.showSnackbar(
-                                message = if (task.isCompleted) "Task marked as Incomplete" else "Task marked as Completed",
-                                actionLabel = "Undo",
-                                duration = SnackbarDuration.Short
-                            )
-                            if (result == SnackbarResult.ActionPerformed) {
-                                onComplete(task.isCompleted) // Undo action
+                    if (abs(dragAmount.x) > abs(dragAmount.y)) {
+                        // **Horizontal Swipe Gesture**
+                        scope.launch {
+                            offsetX.snapTo(offsetX.value + dragAmount.x)
+
+                            if (offsetX.value > 300) { // Swipe Right - Mark as Completed
+                                onComplete(!task.isCompleted)
+                                val result = snackbarHostState.showSnackbar(
+                                    message = if (task.isCompleted) "Task marked as Incomplete" else "Task marked as Completed",
+                                    actionLabel = "Undo",
+                                    duration = SnackbarDuration.Short
+                                )
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    onComplete(task.isCompleted) // Undo action
+                                }
+                                offsetX.animateTo(0f)
+                            } else if (offsetX.value < -300) { // Swipe Left - Delete
+                                onDelete()
+//                                val result = snackbarHostState.showSnackbar(
+//                                    message = "Task deleted",
+//                                    actionLabel = "Undo",
+//                                    duration = SnackbarDuration.Short
+//                                )
+////                                if (result == SnackbarResult.ActionPerformed) {
+////                                    // Handle undo deletion (if needed)
+////                                }
+                                offsetX.animateTo(0f)
                             }
-                            offsetX.animateTo(0f)
-                        } else if (offsetX.value < -300) {
-                            onDelete()
-                            val result = snackbarHostState.showSnackbar(
-                                message = "Task deleted",
-                                actionLabel = "Undo",
-                                duration = SnackbarDuration.Short
-                            )
-                            if (result == SnackbarResult.ActionPerformed) {
-                                // Handle undo deletion (if needed)
+                        }
+                    } else {
+                        // **Vertical Drag Gesture (Reorder)**
+                        scope.launch {
+                            offsetY.snapTo(offsetY.value + dragAmount.y)
+                            // Move item up/down when swipe threshold is reached
+                            if (offsetY.value > 100) {
+                                onMove(index, index + 1) // Move task down
+                                offsetY.snapTo(0f)
+                            } else if (offsetY.value < -100) {
+                                onMove(index, index - 1) // Move task up
+                                offsetY.snapTo(0f)
                             }
-                            offsetX.animateTo(0f)
                         }
                     }
                 }
             }
-            .offset { IntOffset(offsetX.value.toInt(), 0) }
+            .offset { IntOffset(offsetX.value.toInt(), offsetY.value.toInt()) }
             .padding(8.dp)
     ) {
         Card(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 8.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             shape = shapes.small,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

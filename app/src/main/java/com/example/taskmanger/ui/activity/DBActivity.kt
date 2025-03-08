@@ -3,7 +3,6 @@ package com.example.taskmanger.ui.activity
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -44,7 +43,6 @@ class DBActivity : ComponentActivity() {
             val isDarkTheme by settingVM.isDarkTheme.collectAsState()
             val primaryColor by settingVM.primaryColor.collectAsState()
 
-            Log.d("VVV","primaryColor $primaryColor")
             TaskMangerTheme(darkTheme = isDarkTheme, appTheme = AppTheme.valueOf(primaryColor)) {
                 Surface(
                     modifier = Modifier

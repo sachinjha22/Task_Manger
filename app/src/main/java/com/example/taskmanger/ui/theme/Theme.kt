@@ -1,7 +1,6 @@
 package com.example.taskmanger.ui.theme
 
 import android.app.Activity
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -40,17 +39,17 @@ import com.example.taskmanger.data.model.AppTheme
 //)
 
 private val DarkColorScheme = darkColorScheme(
-    primary = primary,
-    primaryContainer = primaryContainer,
-    background = background,
-    onBackground = onBackground
-)
-
-private val LightColorScheme = lightColorScheme(
     primary = primaryNight,
     primaryContainer = primaryContainerNight,
     background = backgroundNight,
     onBackground = onBackgroundNight
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = primary,
+    primaryContainer = primaryContainer,
+    background = background,
+    onBackground = onBackground
 )
 
 private val GreenNightColorScheme = lightColorScheme(
@@ -96,7 +95,6 @@ fun TaskMangerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    Log.d("VVV", "appTheme $appTheme")
     val colorScheme = when (appTheme) {
         AppTheme.Default -> {
             when {

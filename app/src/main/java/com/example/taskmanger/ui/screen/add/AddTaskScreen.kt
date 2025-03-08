@@ -163,7 +163,11 @@ fun AddTaskScreen(
                         OutlinedTextField(
                             value = title,
                             onValueChange = { title = it },
-                            label = { Text("Task Title") },
+                            label = {
+                                Text(
+                                    "Task Title", color = MaterialTheme.colorScheme.onBackground
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
                             textStyle = TextStyle(
@@ -177,7 +181,12 @@ fun AddTaskScreen(
                         OutlinedTextField(
                             value = description,
                             onValueChange = { description = it },
-                            label = { Text("Task Description") },
+                            label = {
+                                Text(
+                                    "Task Description",
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
                             textStyle = TextStyle(

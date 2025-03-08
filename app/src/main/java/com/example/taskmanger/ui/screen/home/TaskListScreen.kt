@@ -22,7 +22,6 @@ import androidx.navigation.NavController
 import com.example.taskmanger.data.model.Task
 import com.example.taskmanger.data.model.filter.SortOption
 import com.example.taskmanger.data.model.filter.TaskStatus
-import com.example.taskmanger.ui.component.TaskItem
 import com.example.taskmanger.ui.component.TaskItemWithSwipe
 import com.example.taskmanger.utils.Resource
 import com.example.taskmanger.viewmodel.TaskViewModel
@@ -36,7 +35,7 @@ fun TaskListScreen(
 ) {
     val tasks by viewModel.tasks.collectAsState()
     var selectedFilter by remember { mutableStateOf(TaskStatus.ALL) }
-    var selectedSort by remember { mutableStateOf(SortOption.BY_DATE) }
+    var selectedSort by remember { mutableStateOf(SortOption.DEFAULT) }
     var draggedItem by remember { mutableStateOf<Task?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -85,7 +84,14 @@ fun TaskListScreen(
                                 snackbarHostState = snackbarHostState,
                                 onTaskClick = { navController.navigate("taskDetails/${task.id}") },
                                 onCompleteToggle = { viewModel.toggleComplete(it) },
-                                onDeleteClick = { viewModel.deleteTask(it) }
+                                onDeleteClick = { viewModel.deleteTask(it) },
+                                onMove = { fromIndex, toIndex ->
+                                    viewModel.reorderTasks(
+                                        fromIndex,
+                                        toIndex
+                                    )
+                                },
+                                index
                             )
                         }
 

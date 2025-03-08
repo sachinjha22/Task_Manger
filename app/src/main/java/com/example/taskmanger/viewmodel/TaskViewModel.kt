@@ -1,5 +1,6 @@
 package com.example.taskmanger.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskmanger.data.model.Task
@@ -21,7 +22,7 @@ class TaskViewModel @Inject constructor(private val repository: TaskRepository) 
     private val _tasks = MutableStateFlow<Resource<List<Task>>>(Resource.Loading)
     val tasks: StateFlow<Resource<List<Task>>> get() = _tasks
     private val _tasksData = MutableStateFlow<List<Task>>(emptyList())
-    val tasksData: StateFlow<List<Task>> get() = _tasksData
+//    val tasksData: StateFlow<List<Task>> get() = _tasksData
 
     init {
         loadTasks()
@@ -40,9 +41,6 @@ class TaskViewModel @Inject constructor(private val repository: TaskRepository) 
         }
     }
 
-
-//    val tasks: Flow<List<Task>> = repository.getAllTasks()
-
     fun insertTask(task: Task) = viewModelScope.launch { repository.insertTask(task) }
     fun deleteTask(task: Task) = viewModelScope.launch { repository.deleteTask(task) }
     fun toggleComplete(task: Task) = viewModelScope.launch {
@@ -58,26 +56,30 @@ class TaskViewModel @Inject constructor(private val repository: TaskRepository) 
                 TaskStatus.COMPLETED -> task.isCompleted
                 TaskStatus.PENDING -> !task.isCompleted
             }
-        }.sortedWith(
+        }.let { filteredTasks ->
             when (sortOption) {
-                SortOption.BY_DATE -> compareBy { it.dueDate }
-                SortOption.BY_PRIORITY -> compareByDescending { it.priority }
-                SortOption.ALPHABETICAL -> compareBy { it.title }
+                SortOption.BY_DATE -> filteredTasks.sortedBy { it.dueDate }
+                SortOption.BY_PRIORITY -> filteredTasks.sortedByDescending { it.priority }
+                SortOption.ALPHABETICAL -> filteredTasks.sortedBy { it.title }
+                SortOption.DEFAULT -> filteredTasks
             }
-        )
+        }
     }
 
     fun reorderTasks(fromIndex: Int, toIndex: Int) {
-        viewModelScope.launch {
-            val currentList = _tasksData.value.toMutableList()
-            val movedTask = currentList.removeAt(fromIndex)
-            currentList.add(toIndex, movedTask)
+        try {
+            viewModelScope.launch {
+                val currentList = _tasksData.value.toMutableList()
+                val movedTask = currentList.removeAt(fromIndex)
+                currentList.add(toIndex, movedTask)
 
-            // Update database with new order
-            repository.updateTasks(currentList)
-
-            // Update state
-            _tasksData.value = currentList
+                // Update database with new order
+                repository.updateTasks(currentList)
+                // Update state
+                _tasksData.value = currentList
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
