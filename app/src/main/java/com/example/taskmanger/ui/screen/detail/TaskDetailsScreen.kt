@@ -44,15 +44,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.taskmanger.ui.component.TextFieldComponent
-import com.example.taskmanger.ui.theme.TaskMangerTheme
 import com.example.taskmanger.ui.theme.background
-import com.example.taskmanger.ui.theme.onBackground
 import com.example.taskmanger.viewmodel.TaskViewModel
 import kotlinx.coroutines.delay
 
@@ -83,7 +78,8 @@ fun TaskDetailsScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
             Scaffold(
@@ -123,7 +119,7 @@ fun TaskDetailsScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(start = 20.dp, end = 20.dp)
+                                .padding(start = 20.dp, end = 20.dp, top = 30.dp, bottom = 80.dp)
                                 .verticalScroll(scrollState)
                                 .align(alignment = Alignment.TopCenter)
                         ) {
@@ -134,7 +130,6 @@ fun TaskDetailsScreen(
                             TextFieldComponent(task?.dueDate.toString(), "Due Date")
                             Spacer(modifier = Modifier.height(8.dp))
                             TextFieldComponent(task?.description, "Description")
-                            Spacer(modifier = Modifier.height(80.dp))
                         }
 
                         Card(
@@ -197,15 +192,5 @@ fun TaskDetailsScreen(
 
         }
 
-    }
-}
-
-
-@Preview
-@Composable
-private fun Greet() {
-    val nav = rememberNavController()
-    TaskMangerTheme {
-        TaskDetailsScreen(nav, hiltViewModel<TaskViewModel>(), 1)
     }
 }

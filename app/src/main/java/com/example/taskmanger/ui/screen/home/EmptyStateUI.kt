@@ -36,7 +36,7 @@ fun EmptyStateUI(massage:String) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "No tasks yet! Start adding tasks and stay productive.",
+            text = massage,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )

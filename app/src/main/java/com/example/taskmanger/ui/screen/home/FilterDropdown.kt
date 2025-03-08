@@ -1,7 +1,6 @@
 package com.example.taskmanger.ui.screen.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,8 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.example.taskmanger.data.model.filter.TaskStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +34,8 @@ fun FilterDropdown(
             readOnly = true,
             label = { Text("Filter By") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .menuAnchor(),
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground

@@ -44,7 +44,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.taskmanger.data.model.AppTheme
-import com.example.taskmanger.ui.theme.onBackground
 import com.example.taskmanger.viewmodel.SettingViewModel
 import kotlinx.coroutines.delay
 
